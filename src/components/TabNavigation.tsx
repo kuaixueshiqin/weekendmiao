@@ -38,14 +38,14 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
                   <tab.icon
                     className="w-[22px] h-[22px] transition-colors duration-200"
                     style={{
-                      color: isActive ? "#FBE4BA" : "hsl(40 30% 70%)",
+                      color: isActive ? "hsl(28 60% 28%)" : "hsl(40 30% 70%)",
                       strokeWidth: isActive ? 2.2 : 1.8,
                     }}
                   />
                 </motion.div>
                 <span
                   className="text-[10px] font-medium transition-colors duration-200"
-                  style={{ color: isActive ? "#FBE4BA" : "hsl(40 30% 70%)" }}
+                  style={{ color: isActive ? "hsl(28 60% 28%)" : "hsl(40 30% 70%)" }}
                 >
                   {tab.label}
                 </span>
