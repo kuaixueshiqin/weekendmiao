@@ -425,11 +425,10 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               >
                 {msg.role === "user" ? (
                   <div
-                    className="max-w-[82%] px-4 py-2.5 rounded-2xl rounded-br-sm text-sm font-medium leading-relaxed"
+                    className="max-w-[82%] px-4 py-2.5 rounded-2xl rounded-br-sm text-sm font-medium leading-relaxed border border-border"
                     style={{
-                      background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-                      color: "hsl(30 20% 10%)",
-                      boxShadow: "0 2px 12px hsl(43 100% 50% / 0.3)",
+                      background: "hsl(var(--border))",
+                      color: "hsl(var(--foreground))",
                     }}
                   >
                     {msg.content}
