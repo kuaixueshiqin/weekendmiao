@@ -362,11 +362,11 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-center mb-3"
+              className="text-center mb-1"
             >
-              <h2 className="text-[19px] font-bold mb-1 tracking-tight">
-                你好，我是<span className="text-gradient-warm">周末喵</span> 🐱
-              </h2>
+              <p className="text-sm text-muted-foreground font-medium">
+                你好，我是周末喵 🐱，可以帮你规划周末时间
+              </p>
             </motion.div>
 
             {/* Quick fill button */}
