@@ -210,8 +210,8 @@ const ItineraryTab = () => {
               onClick={() => setShowAddTrip(true)}
               className="w-9 h-9 rounded-2xl flex items-center justify-center transition-all"
               style={{
-                background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-                boxShadow: "0 2px 8px hsl(43 100% 50% / 0.3)",
+                background: "#FBE4BA",
+                boxShadow: "0 2px 8px hsl(38 89% 86% / 0.4)",
               }}
             >
               <Plus className="w-4 h-4 text-amber-900" />
@@ -243,8 +243,8 @@ const ItineraryTab = () => {
             onClick={handleBookAll}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm text-amber-900 transition-all active:scale-[0.98]"
             style={{
-              background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(26 95% 52%))",
-              boxShadow: "0 4px 16px hsl(43 100% 50% / 0.35)",
+              background: "#FBE4BA",
+              boxShadow: "0 4px 16px hsl(38 89% 86% / 0.45)",
             }}
           >
             <ShoppingCart className="w-4 h-4" />
