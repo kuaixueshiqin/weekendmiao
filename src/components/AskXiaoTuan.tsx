@@ -532,12 +532,13 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
             className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all disabled:opacity-30"
             style={{
               background: input.trim() && !isTyping
-                ? "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))"
+                ? "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--meituan-orange)))"
                 : "hsl(220 8% 94%)",
-              boxShadow: input.trim() && !isTyping ? "0 2px 10px hsl(43 100% 50% / 0.4)" : "none",
+              boxShadow: input.trim() && !isTyping ? "0 2px 10px hsl(var(--primary) / 0.4)" : "none",
             }}
           >
-            <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "hsl(30 20% 10%)" : "hsl(220 8% 56%)" }} />
+            <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "hsl(var(--primary-foreground))" : "hsl(220 8% 56%)" }} />
+
           </button>
         </div>
       </div>
