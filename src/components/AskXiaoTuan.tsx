@@ -388,9 +388,9 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.22 + i * 0.06 }}
                   onClick={() => handleSend(s)}
-                  className="w-full px-5 py-2.5 rounded-[22px] bg-card border border-border hover:border-primary/40 transition-all text-left"
+                  className="w-full px-3.5 py-1.5 rounded-[16px] bg-card border border-border hover:border-primary/40 transition-all text-left"
                 >
-                  <span className="text-[13.5px] font-medium text-foreground/85 leading-snug">{s}</span>
+                  <span className="text-[12px] font-medium text-foreground/85 leading-snug">{s}</span>
                 </motion.button>
               ))}
             </motion.div>
