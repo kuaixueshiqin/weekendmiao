@@ -34,7 +34,7 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
               {isActive && (
                 <motion.div
                   layoutId="tabPill"
-                  className="absolute inset-x-1.5 inset-y-0 rounded-xl bg-primary/12"
+                  className="absolute inset-x-1.5 inset-y-0 rounded-xl bg-primary"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
