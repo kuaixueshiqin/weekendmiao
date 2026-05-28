@@ -34,7 +34,7 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
               {isActive && (
                 <motion.div
                   layoutId="tabPill"
-                  className="absolute inset-x-1.5 inset-y-0 rounded-xl bg-primary/12"
+                  className="absolute inset-x-1.5 inset-y-0 rounded-xl bg-primary"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
@@ -46,14 +46,14 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
                   <tab.icon
                     className="w-[22px] h-[22px] transition-colors duration-200"
                     style={{
-                      color: isActive ? "hsl(var(--primary))" : "hsl(220 8% 56%)",
+                      color: isActive ? "hsl(30 35% 18%)" : "hsl(40 30% 70%)",
                       strokeWidth: isActive ? 2.2 : 1.8,
                     }}
                   />
                 </motion.div>
                 <span
                   className="text-[10px] font-medium transition-colors duration-200"
-                  style={{ color: isActive ? "hsl(var(--primary))" : "hsl(220 8% 56%)" }}
+                  style={{ color: isActive ? "hsl(30 35% 18%)" : "hsl(40 30% 70%)" }}
                 >
                   {tab.label}
                 </span>

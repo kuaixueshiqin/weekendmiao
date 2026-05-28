@@ -15,8 +15,8 @@
     --popover: 46 65% 95%;
     --popover-foreground: 220 15% 12%;
 
-    --primary: 32 72% 62%;
-    --primary-foreground: 30 25% 12%;
+    --primary: 38 89% 86%;
+    --primary-foreground: 30 35% 18%;
 
     --secondary: 44 38% 85%;
     --secondary-foreground: 220 10% 25%;
@@ -24,21 +24,21 @@
     --muted: 46 65% 95%;
     --muted-foreground: 36 12% 42%;
 
-    --accent: 43 100% 94%;
-    --accent-foreground: 43 90% 32%;
+    --accent: 38 89% 92%;
+    --accent-foreground: 30 35% 18%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 44 32% 84%;
     --input: 44 32% 84%;
-    --ring: 32 72% 62%;
+    --ring: 38 89% 86%;
 
     --radius: 0.875rem;
 
-    --meituan-yellow: 32 72% 62%;
-    --meituan-yellow-hover: 32 72% 54%;
-    --meituan-yellow-light: 32 72% 95%;
+    --meituan-yellow: 38 89% 86%;
+    --meituan-yellow-hover: 38 70% 76%;
+    --meituan-yellow-light: 38 89% 94%;
     --meituan-green: 152 60% 42%;
     --meituan-green-foreground: 0 0% 100%;
     --meituan-red: 4 80% 52%;
