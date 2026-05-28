@@ -12,12 +12,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex justify-center overflow-hidden">
-      {/* ── 整个 430px 核心容器整体右移，fixed 子元素会跟随 transform ── */}
-      <motion.div
-        className="w-full max-w-[430px] min-h-screen bg-background relative shadow-xl"
-        animate={{ x: showSidebar ? "min(320px, 78vw)" : 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
+      <div className="w-full max-w-[430px] min-h-screen bg-background relative shadow-xl">
         <main className="pb-28 overflow-y-auto scrollbar-hide" style={{ height: "100vh" }}>
           {activeTab === "ask" && (
             <AskXiaoTuan showSidebar={showSidebar} onSidebarChange={setShowSidebar} />
@@ -27,7 +22,7 @@ const Index = () => {
           {activeTab === "profile" && <ProfileTab />}
         </main>
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-      </motion.div>
+      </div>
     </div>
   );
 };
