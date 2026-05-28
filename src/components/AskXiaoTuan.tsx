@@ -388,9 +388,9 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.22 + i * 0.06 }}
                   onClick={() => handleSend(s)}
-                  className="w-full px-5 py-2.5 rounded-[22px] bg-card border border-border hover:border-primary/40 transition-all text-left"
+                  className="w-full px-3.5 py-1.5 rounded-[16px] bg-card border border-border hover:border-primary/40 transition-all text-left"
                 >
-                  <span className="text-[13.5px] font-medium text-foreground/85 leading-snug">{s}</span>
+                  <span className="text-[12px] font-medium text-foreground/85 leading-snug">{s}</span>
                 </motion.button>
               ))}
             </motion.div>
@@ -499,21 +499,20 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
       <div
         className="fixed bottom-14 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-3 pt-2 pb-2 z-40 bg-background"
       >
-        <div className="flex items-center gap-2">
-          {/* Template button */}
-          <button
-            onClick={() => setShowTemplate(true)}
-            className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all border border-border ${
-              showTemplate
-                ? "bg-primary/15 text-amber-700"
-                : "bg-card text-muted-foreground hover:bg-secondary"
-            }`}
-          >
-            <SlidersHorizontal style={{ width: 17, height: 17 }} />
-          </button>
+        <div className="flex items-center">
+          {/* Unified pill: template button + textarea + send */}
+          <div className="flex-1 flex items-center gap-2 rounded-[24px] bg-card border border-border pl-2 pr-1.5 h-12 shadow-[0_0_3px_0.5px_hsl(var(--primary)/0.35)]">
+            {/* Template button (inside pill) */}
+            <button
+              onClick={() => setShowTemplate(true)}
+              className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                showTemplate ? "bg-primary/15 text-amber-700" : "text-muted-foreground hover:bg-secondary"
+              }`}
+              aria-label="快捷设置"
+            >
+              <SlidersHorizontal style={{ width: 18, height: 18 }} />
+            </button>
 
-          {/* Pill input — fills remaining space */}
-          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 shadow-[0_0_3px_0.5px_hsl(var(--primary)/0.35)]">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -523,23 +522,20 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               className="flex-1 resize-none bg-transparent text-sm focus:outline-none placeholder:text-[hsl(220_8%_62%)] leading-tight py-0 self-center"
               style={{ minHeight: 22, maxHeight: 88 }}
             />
+
+            {/* Send (inside pill) */}
+            <button
+              onClick={() => handleSend()}
+              disabled={!input.trim() || isTyping}
+              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
+              style={{
+                background: input.trim() && !isTyping ? "hsl(28 60% 28%)" : "hsl(220 8% 94%)",
+              }}
+              aria-label="发送"
+            >
+              <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "#FBE4BA" : "hsl(220 8% 56%)" }} />
+            </button>
           </div>
-
-          {/* Send */}
-          <button
-            onClick={() => handleSend()}
-            disabled={!input.trim() || isTyping}
-            className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all disabled:opacity-30"
-            style={{
-              background: input.trim() && !isTyping
-                ? "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--meituan-orange)))"
-                : "hsl(220 8% 94%)",
-              boxShadow: input.trim() && !isTyping ? "0 2px 10px hsl(var(--primary) / 0.4)" : "none",
-            }}
-          >
-            <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "hsl(var(--primary-foreground))" : "hsl(220 8% 56%)" }} />
-
-          </button>
         </div>
       </div>
 
