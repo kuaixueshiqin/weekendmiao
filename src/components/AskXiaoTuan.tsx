@@ -343,14 +343,14 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center px-5 pt-4 pb-4"
+            className="flex flex-col items-center justify-between px-5 pt-4 pb-3 flex-1"
           >
             {/* Hero mascot area */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.05 }}
-              className="relative mb-3"
+              className="relative mb-2"
             >
               <div className="w-14 h-14 rounded-[22px] bg-gradient-to-br from-primary/30 to-meituan-orange/20 flex items-center justify-center shadow-lg">
                 <img src={mascotImg} alt="周末喵" className="w-10 h-10 object-contain" />
@@ -364,7 +364,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-center mb-4"
+              className="text-center mb-3"
             >
               <h2 className="text-[19px] font-bold mb-1 tracking-tight">
                 你好，我是<span className="text-gradient-warm">周末喵</span> 🐱
@@ -377,7 +377,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={() => setShowTemplate(true)}
-              className="flex items-center gap-2 px-5 py-2 mb-4 rounded-full text-sm font-semibold border-2 border-primary/30 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
+              className="flex items-center gap-2 px-5 py-2 mb-3 rounded-full text-sm font-semibold border-2 border-primary/30 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
               style={{ background: "hsl(43 100% 50% / 0.08)" }}
             >
               <SlidersHorizontal className="w-4 h-4" />
