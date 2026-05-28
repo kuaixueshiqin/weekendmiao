@@ -513,12 +513,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
 
       {/* ── Input bar ── fixed above tab bar, fused visually ── */}
       <div
-        className="fixed bottom-14 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-3 pt-2 pb-2 z-40"
-        style={{
-          background: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        }}
+        className="fixed bottom-14 left-1/2 -translate-x-1/2 w-full max-w-[430px] px-3 pt-2 pb-2 z-40 bg-background"
       >
         <div className="flex items-center gap-2">
           {/* Template button */}
