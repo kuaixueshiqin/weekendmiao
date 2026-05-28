@@ -182,12 +182,7 @@ const ItineraryTab = () => {
     <div className="bg-background min-h-full">
       {/* ── Sticky header ── */}
       <div
-        className="sticky top-0 z-20 px-4 pt-4 pb-3"
-        style={{
-          background: "rgba(247,244,240,0.92)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-        }}
+        className="sticky top-0 z-20 px-4 pt-4 pb-3 bg-background"
       >
         {/* Title */}
         <div className="flex items-center justify-between mb-3">
