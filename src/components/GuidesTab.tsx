@@ -115,8 +115,8 @@ const GuidesTab = () => {
               style={
                 activeFilter === f
                   ? {
-                      background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-                      boxShadow: "0 2px 8px hsl(43 100% 50% / 0.3)",
+                      background: "#FBE4BA",
+                      boxShadow: "0 2px 8px hsl(38 89% 86% / 0.4)",
                     }
                   : { boxShadow: "var(--shadow-card)" }
               }
@@ -260,8 +260,8 @@ const GuidesTab = () => {
                         <button
                           className="px-3 py-1 rounded-full text-xs font-bold text-amber-800 transition-all active:scale-95"
                           style={{
-                            background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-                            boxShadow: "0 1px 6px hsl(43 100% 50% / 0.3)",
+                            background: "#FBE4BA",
+                            boxShadow: "0 1px 6px hsl(38 89% 86% / 0.4)",
                           }}
                         >
                           抢购

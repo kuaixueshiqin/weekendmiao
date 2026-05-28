@@ -163,21 +163,21 @@ const ProfileTab = () => {
           <div
             className="rounded-2xl p-4 cursor-pointer overflow-hidden relative hover:opacity-95 transition-opacity active:scale-[0.99]"
             style={{
-              background: "linear-gradient(135deg, hsl(43 100% 48%), hsl(26 95% 52%))",
-              boxShadow: "0 4px 20px hsl(43 100% 50% / 0.35)",
+              background: "#FBE4BA",
+              boxShadow: "0 4px 20px hsl(38 89% 86% / 0.45)",
             }}
           >
-            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-white/10" />
-            <div className="absolute -right-2 -bottom-6 w-16 h-16 rounded-full bg-white/8" />
+            <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-amber-900/5" />
+            <div className="absolute -right-2 -bottom-6 w-16 h-16 rounded-full bg-amber-900/5" />
             <div className="relative flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
+              <div className="w-11 h-11 rounded-2xl bg-amber-900/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-amber-900" />
               </div>
               <div className="flex-1">
-                <p className="font-bold text-white text-sm">查看我的出行报告</p>
-                <p className="text-white/75 text-xs mt-0.5">了解你的本地探索偏好</p>
+                <p className="font-bold text-amber-900 text-sm">查看我的出行报告</p>
+                <p className="text-amber-900/70 text-xs mt-0.5">了解你的本地探索偏好</p>
               </div>
-              <ChevronRight className="w-5 h-5 text-white/80" />
+              <ChevronRight className="w-5 h-5 text-amber-900/70" />
             </div>
           </div>
         </motion.div>

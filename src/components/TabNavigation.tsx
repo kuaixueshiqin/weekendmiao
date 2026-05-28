@@ -30,14 +30,6 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
               onClick={() => onTabChange(tab.id)}
               className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-1 transition-all duration-200"
             >
-              {/* Active background pill */}
-              {isActive && (
-                <motion.div
-                  layoutId="tabPill"
-                  className="absolute inset-x-1.5 inset-y-0 rounded-xl bg-primary"
-                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                />
-              )}
               <div className="relative z-10 flex flex-col items-center gap-0.5">
                 <motion.div
                   animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0 }}
@@ -46,14 +38,14 @@ const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
                   <tab.icon
                     className="w-[22px] h-[22px] transition-colors duration-200"
                     style={{
-                      color: isActive ? "hsl(30 35% 18%)" : "hsl(40 30% 70%)",
+                      color: isActive ? "#FBE4BA" : "hsl(40 30% 70%)",
                       strokeWidth: isActive ? 2.2 : 1.8,
                     }}
                   />
                 </motion.div>
                 <span
                   className="text-[10px] font-medium transition-colors duration-200"
-                  style={{ color: isActive ? "hsl(30 35% 18%)" : "hsl(40 30% 70%)" }}
+                  style={{ color: isActive ? "#FBE4BA" : "hsl(40 30% 70%)" }}
                 >
                   {tab.label}
                 </span>

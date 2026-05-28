@@ -396,8 +396,8 @@ const QuickFillTemplate = ({ onSubmit }: QuickFillTemplateProps) => {
         onClick={handleSubmit}
         className="w-full py-3.5 rounded-2xl font-bold text-sm text-amber-900 flex items-center justify-center gap-2 transition-all active:scale-[0.98] mt-1"
         style={{
-          background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-          boxShadow: "0 4px 16px hsl(43 100% 50% / 0.35)",
+          background: "#FBE4BA",
+          boxShadow: "0 4px 16px hsl(38 89% 86% / 0.45)",
         }}
       >
         ✨ 帮我安排一下
