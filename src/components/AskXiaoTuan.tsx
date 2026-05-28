@@ -513,7 +513,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           </button>
 
           {/* Pill input — fills remaining space */}
-          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 animate-breathe-glow focus-within:animate-none focus-within:shadow-[0_0_12px_2px_hsl(43_100%_50%_/_0.45)] transition-shadow">
+          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 shadow-[0_0_6px_1px_hsl(var(--primary)/0.35)]">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
