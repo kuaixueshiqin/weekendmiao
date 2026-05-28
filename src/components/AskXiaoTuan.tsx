@@ -364,8 +364,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={() => setShowTemplate(true)}
-              className="flex items-center gap-2 px-5 py-2 mb-3 rounded-full text-sm font-semibold border-2 border-primary/30 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
-              style={{ background: "hsl(43 100% 50% / 0.08)" }}
+              className="flex items-center gap-2 px-5 py-2 mb-3 rounded-full text-sm font-semibold border-2 border-primary/30 text-primary-foreground hover:bg-primary/15 hover:border-primary/50 transition-all"
+              style={{ background: "hsl(var(--primary) / 0.12)", color: "hsl(28 60% 28%)" }}
             >
               <SlidersHorizontal className="w-4 h-4" />
               快捷填写出行需求
