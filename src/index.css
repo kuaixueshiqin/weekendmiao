@@ -180,6 +180,15 @@
   animation: float-up 0.35s ease-out forwards;
 }
 
+@keyframes breathe-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(43 100% 50% / 0); }
+  50% { box-shadow: 0 0 12px 2px hsl(43 100% 50% / 0.35); }
+}
+
+.animate-breathe-glow {
+  animation: breathe-glow 2.5s ease-in-out infinite;
+}
+
 /* ── page phone frame ─────────────────────────────────────── */
 .phone-frame {
   box-shadow: 0 0 0 1px hsl(220 20% 88%), 0 24px 80px -12px hsl(220 30% 12% / 0.2);

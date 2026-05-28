@@ -358,17 +358,6 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
 
 
 
-            <motion.div
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="text-center mb-3"
-            >
-              <h2 className="text-[19px] font-bold mb-1 tracking-tight">
-                你好，我是<span className="text-gradient-warm">周末喵</span> 🐱
-              </h2>
-            </motion.div>
-
             {/* Quick fill button */}
             <motion.button
               initial={{ y: 8, opacity: 0 }}
@@ -390,7 +379,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               className="w-full space-y-2"
             >
               <p className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-primary" /> 大家都在问
+                <Sparkles className="w-3 h-3 text-primary" /> 你好，我是周末喵 🐱，可以帮你规划周末时间
               </p>
               {suggestions.map((s, i) => (
                 <motion.button
@@ -524,7 +513,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           </button>
 
           {/* Pill input — fills remaining space */}
-          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10">
+          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 animate-breathe-glow focus-within:animate-none focus-within:shadow-[0_0_12px_2px_hsl(43_100%_50%_/_0.45)] transition-shadow">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
