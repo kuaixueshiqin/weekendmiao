@@ -18,13 +18,7 @@ const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
 const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-[430px]"
-      style={{
-        background: "rgba(255,255,255,0.92)",
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        boxShadow: activeTab === "ask" ? "none" : "0 -1px 0 rgba(0,0,0,0.08)",
-      }}
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-[430px] bg-background"
     >
       {/* safe area */}
       <div className="flex items-center h-[56px] px-2">
