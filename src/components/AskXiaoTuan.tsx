@@ -519,17 +519,17 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           {/* Template button */}
           <button
             onClick={() => setShowTemplate(true)}
-            className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
+            className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all border border-border ${
               showTemplate
                 ? "bg-primary/15 text-amber-700"
-                : "bg-[hsl(220_8%_94%)] text-[hsl(220_8%_46%)] hover:bg-[hsl(220_8%_89%)]"
+                : "bg-card text-muted-foreground hover:bg-secondary"
             }`}
           >
             <SlidersHorizontal style={{ width: 17, height: 17 }} />
           </button>
 
           {/* Pill input — fills remaining space */}
-          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-[hsl(220_8%_94%)] px-4 h-10">
+          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
