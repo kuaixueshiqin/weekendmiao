@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Menu, Search, Plus, ChevronRight,
-} from "lucide-react";
+import { Search, Settings, Plus, MessageSquarePlus, ChevronRight } from "lucide-react";
 
 // ── Mock history data (按时间分组)
 const HISTORY_GROUPS = [
@@ -48,19 +46,13 @@ interface HistorySidebarProps {
   onLocationClick: () => void;
 }
 
-// 侧栏宽度（与元宝一致，约占屏幕 78%）
-const SIDEBAR_WIDTH = "min(320px, 78vw)";
+// 侧栏占主容器约 78%
+const SIDEBAR_WIDTH = "78%";
 
-const HistorySidebar = ({
-  open,
-  onClose,
-  onSelectChat,
-  currentLocationName,
-  onLocationClick,
-}: HistorySidebarProps) => {
+const HistorySidebar = ({ open, onClose, onSelectChat }: HistorySidebarProps) => {
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter groups by search
   const filteredGroups = searchQuery.trim()
     ? HISTORY_GROUPS.map((g) => ({
         ...g,
@@ -74,126 +66,131 @@ const HistorySidebar = ({
     <AnimatePresence>
       {open && (
         <>
-          {/* ── Sidebar panel — fixed left, pushes main content right ── */}
+          {/* Backdrop — 仅覆盖移动框内右侧区域，点击关闭 */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 z-[65]"
+            style={{ background: "rgba(0,0,0,0.18)" }}
+            onClick={onClose}
+          />
+
+          {/* Sidebar panel — 在移动框内从左滑出 */}
           <motion.div
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 z-[70] h-full bg-background flex flex-col shadow-2xl"
+            transition={{ type: "spring", stiffness: 300, damping: 32 }}
+            className="absolute top-0 left-0 z-[70] h-full bg-background flex flex-col shadow-2xl"
             style={{ width: SIDEBAR_WIDTH }}
           >
-            {/* ── Header ── */}
+            {/* ── Header：标题 + 搜索 + 设置 ── */}
             <div
-              className="shrink-0 flex items-center justify-between px-4 pt-12 pb-3 border-b border-border/50"
+              className="shrink-0 flex items-center justify-between px-4 pt-11 pb-3"
               style={{
                 background: "rgba(247,244,240,0.95)",
                 backdropFilter: "blur(16px)",
                 WebkitBackdropFilter: "blur(16px)",
               }}
             >
-              {/* Left: menu icon + title */}
-              <button
-                onClick={onClose}
-                className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center hover:bg-secondary transition-colors shrink-0 mr-2"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              <div className="flex-1 min-w-0">
-                <h1 className="text-lg font-bold tracking-tight">周末喵</h1>
+              <h1 className="text-[22px] font-bold tracking-tight">周末喵</h1>
+              <div className="flex items-center gap-1">
                 <button
-                  onClick={onLocationClick}
-                  className="flex items-center gap-1 mt-0.5 group w-fit"
+                  onClick={() => setSearchOpen((v) => !v)}
+                  className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/70 active:bg-muted transition-colors"
+                  aria-label="搜索"
                 >
-                  <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-[160px]">
-                    {currentLocationName || "选择位置"}
-                  </span>
-                  <ChevronRight className="w-3 h-3 text-muted-foreground" />
+                  <Search className="w-[18px] h-[18px] text-foreground/80" />
+                </button>
+                <button
+                  className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/70 active:bg-muted transition-colors"
+                  aria-label="设置"
+                >
+                  <Settings className="w-[18px] h-[18px] text-foreground/80" />
                 </button>
               </div>
             </div>
 
-            {/* ── Search bar ── */}
-            <div className="shrink-0 px-4 py-3 border-b border-border/40">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="搜索对话…"
-                  className="w-full h-10 pl-9 pr-4 rounded-xl bg-muted border border-border/50 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
-                />
-              </div>
+            {/* ── New chat 大按钮（顶部） ── */}
+            <div className="shrink-0 px-4 pt-1 pb-3">
+              <button
+                onClick={onClose}
+                className="w-full h-12 rounded-full flex items-center justify-center gap-2 bg-muted/70 hover:bg-muted active:scale-[0.99] transition-all text-foreground"
+              >
+                <MessageSquarePlus className="w-[18px] h-[18px]" />
+                <span className="text-[15px] font-semibold">新建对话</span>
+              </button>
             </div>
+
+            {/* 可展开搜索框 */}
+            <AnimatePresence initial={false}>
+              {searchOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="shrink-0 overflow-hidden px-4"
+                >
+                  <input
+                    autoFocus
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="搜索对话…"
+                    className="w-full h-10 px-4 mb-2 rounded-xl bg-muted border border-border/50 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* ── Scrollable list ── */}
             <div className="flex-1 overflow-y-auto scrollbar-hide">
+              {/* 分组 section */}
+              <div className="px-4 pt-2 pb-1 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">分组</span>
+                <button className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground">
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <button className="w-full flex items-center justify-between px-5 py-2.5 hover:bg-muted/40 transition-colors">
+                <span className="flex items-center gap-2 text-sm font-medium">
+                  <span className="text-base">📁</span> 分组示例
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground rotate-90" />
+              </button>
+
               {filteredGroups.length === 0 && (
                 <p className="text-sm text-muted-foreground text-center pt-10">没有找到相关对话</p>
               )}
 
               {filteredGroups.map((group) => (
                 <div key={group.label}>
-                  {/* Group header */}
                   <div className="flex items-center justify-between px-5 pt-4 pb-1.5">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
-                      {group.label}
-                    </span>
-                    {group.label === "今天" && (
-                      <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-0.5">
-                        <Plus className="w-3 h-3" />
-                      </button>
-                    )}
+                    <span className="text-xs text-muted-foreground">{group.label}</span>
                   </div>
-
-                  {/* Items */}
-                  <div className="divide-y divide-border/30">
-                    {group.items.map((item) => (
+                  <div>
+                    {group.items.map((item, idx) => (
                       <button
                         key={item.id}
                         onClick={() => { onSelectChat(item.id); onClose(); }}
-                        className="w-full text-left px-5 py-3.5 hover:bg-muted/40 active:bg-muted/60 transition-colors group"
+                        className={`w-full text-left px-4 mx-0 py-3 transition-colors ${
+                          group.label === "今天" && idx === 0
+                            ? "bg-muted/70 rounded-xl"
+                            : "hover:bg-muted/40"
+                        }`}
                       >
-                        <p className="text-sm font-medium truncate pr-6">{item.title}</p>
+                        <p className="text-sm font-medium truncate pr-2">{item.title}</p>
                       </button>
                     ))}
                   </div>
                 </div>
               ))}
 
-              {/* Bottom padding */}
               <div className="h-6" />
             </div>
-
-            {/* ── New chat button (bottom) ── */}
-            <div className="shrink-0 px-4 py-3 border-t border-border/50 bg-background">
-              <button
-                onClick={onClose}
-                className="w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 bg-primary text-amber-900 active:scale-[0.98] transition-all"
-                style={{
-                  boxShadow: "0 4px 16px hsl(43 100% 50% / 0.35)",
-                }}
-              >
-                <Plus className="w-4 h-4" />
-                新建对话
-              </button>
-            </div>
           </motion.div>
-
-          {/* ── Backdrop overlay on the remaining area (right side) ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[65]"
-            style={{
-              background: "rgba(0,0,0,0.15)",
-              // 遮罩只覆盖侧栏右侧区域（通过 pointer-events 让点击关闭）
-            }}
-            onClick={onClose}
-          />
         </>
       )}
     </AnimatePresence>
