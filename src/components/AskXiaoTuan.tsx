@@ -332,25 +332,31 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
 
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide">
+      <div
+        ref={scrollRef}
+        className={cn(
+          "flex-1 scrollbar-hide",
+          messages.length === 0 ? "overflow-hidden" : "overflow-y-auto"
+        )}
+      >
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center px-5 pt-14 pb-6"
+            className="flex flex-col items-center px-5 pt-4 pb-4"
           >
             {/* Hero mascot area */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.05 }}
-              className="relative mb-5"
+              className="relative mb-3"
             >
-              <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-primary/30 to-meituan-orange/20 flex items-center justify-center shadow-lg">
-                <img src={mascotImg} alt="周末喵" className="w-14 h-14 object-contain" />
+              <div className="w-14 h-14 rounded-[22px] bg-gradient-to-br from-primary/30 to-meituan-orange/20 flex items-center justify-center shadow-lg">
+                <img src={mascotImg} alt="周末喵" className="w-10 h-10 object-contain" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-meituan-green rounded-full border-2 border-white flex items-center justify-center">
-                <span className="text-white text-[9px] font-bold">AI</span>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-meituan-green rounded-full border-2 border-white flex items-center justify-center">
+                <span className="text-white text-[8px] font-bold">AI</span>
               </div>
             </motion.div>
 
@@ -358,12 +364,12 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-center mb-6"
+              className="text-center mb-4"
             >
-              <h2 className="text-[22px] font-bold mb-1.5 tracking-tight">
+              <h2 className="text-[19px] font-bold mb-1 tracking-tight">
                 你好，我是<span className="text-gradient-warm">周末喵</span> 🐱
               </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-[260px] mx-auto">
+              <p className="text-muted-foreground text-[13px] leading-snug max-w-[260px] mx-auto">
                 告诉我今天想带谁去哪儿玩，我来帮你安排下午的活动
               </p>
             </motion.div>
@@ -374,7 +380,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={() => setShowTemplate(true)}
-              className="flex items-center gap-2 px-5 py-2.5 mb-6 rounded-full text-sm font-semibold border-2 border-primary/30 bg-primary/8 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
+              className="flex items-center gap-2 px-5 py-2 mb-4 rounded-full text-sm font-semibold border-2 border-primary/30 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
               style={{ background: "hsl(43 100% 50% / 0.08)" }}
             >
               <SlidersHorizontal className="w-4 h-4" />
@@ -386,9 +392,9 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="w-full space-y-2.5"
+              className="w-full space-y-2"
             >
-              <p className="text-xs text-muted-foreground font-medium mb-2 flex items-center gap-1.5">
+              <p className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3 text-primary" /> 大家都在问
               </p>
               {suggestions.map((s, i) => (
@@ -398,12 +404,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.22 + i * 0.06 }}
                   onClick={() => handleSend(s)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:border-primary/40 hover:shadow-card-hover transition-all text-left group"
-                  style={{ boxShadow: "var(--shadow-card)" }}
+                  className="w-full px-5 py-2.5 rounded-[22px] bg-card border border-border hover:border-primary/40 transition-all text-left"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  </div>
                   <span className="text-[13.5px] font-medium text-foreground/85 leading-snug">{s}</span>
                 </motion.button>
               ))}
