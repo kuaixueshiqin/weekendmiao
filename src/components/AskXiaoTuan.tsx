@@ -356,7 +356,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               <img src={mascotImg} alt="周末喵" className="w-28 h-28 object-contain" />
             </motion.div>
 
-            </motion.div>
+
 
             <motion.div
               initial={{ y: 10, opacity: 0 }}
