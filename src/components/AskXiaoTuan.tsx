@@ -369,9 +369,6 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               <h2 className="text-[19px] font-bold mb-1 tracking-tight">
                 你好，我是<span className="text-gradient-warm">周末喵</span> 🐱
               </h2>
-              <p className="text-muted-foreground text-[13px] leading-snug max-w-[260px] mx-auto">
-                告诉我今天想带谁去哪儿玩，我来帮你安排下午的活动
-              </p>
             </motion.div>
 
             {/* Quick fill button */}
