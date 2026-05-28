@@ -364,8 +364,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={() => setShowTemplate(true)}
-              className="flex items-center gap-2 px-5 py-2 mb-3 rounded-full text-sm font-semibold border-2 border-primary/30 text-amber-700 hover:bg-primary/15 hover:border-primary/50 transition-all"
-              style={{ background: "hsl(43 100% 50% / 0.08)" }}
+              className="flex items-center gap-2 px-5 py-2 mb-3 rounded-full text-sm font-semibold border-2 border-primary/30 text-primary-foreground hover:bg-primary/15 hover:border-primary/50 transition-all"
+              style={{ background: "hsl(var(--primary) / 0.12)", color: "hsl(28 60% 28%)" }}
             >
               <SlidersHorizontal className="w-4 h-4" />
               快捷填写出行需求
@@ -513,7 +513,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           </button>
 
           {/* Pill input — fills remaining space */}
-          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 animate-breathe-glow focus-within:animate-none focus-within:shadow-[0_0_12px_2px_hsl(43_100%_50%_/_0.45)] transition-shadow">
+          <div className="flex-1 flex items-center gap-2 rounded-[22px] bg-card border border-border px-4 h-10 shadow-[0_0_6px_1px_hsl(var(--primary)/0.35)]">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -532,12 +532,13 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
             className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all disabled:opacity-30"
             style={{
               background: input.trim() && !isTyping
-                ? "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))"
+                ? "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--meituan-orange)))"
                 : "hsl(220 8% 94%)",
-              boxShadow: input.trim() && !isTyping ? "0 2px 10px hsl(43 100% 50% / 0.4)" : "none",
+              boxShadow: input.trim() && !isTyping ? "0 2px 10px hsl(var(--primary) / 0.4)" : "none",
             }}
           >
-            <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "hsl(30 20% 10%)" : "hsl(220 8% 56%)" }} />
+            <Send style={{ width: 16, height: 16, color: input.trim() && !isTyping ? "hsl(var(--primary-foreground))" : "hsl(220 8% 56%)" }} />
+
           </button>
         </div>
       </div>

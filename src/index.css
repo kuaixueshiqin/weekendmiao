@@ -15,8 +15,8 @@
     --popover: 46 65% 95%;
     --popover-foreground: 220 15% 12%;
 
-    --primary: 43 100% 50%;
-    --primary-foreground: 30 20% 10%;
+    --primary: 32 72% 62%;
+    --primary-foreground: 30 25% 12%;
 
     --secondary: 44 38% 85%;
     --secondary-foreground: 220 10% 25%;
@@ -32,13 +32,13 @@
 
     --border: 44 32% 84%;
     --input: 44 32% 84%;
-    --ring: 43 100% 50%;
+    --ring: 32 72% 62%;
 
     --radius: 0.875rem;
 
-    --meituan-yellow: 43 100% 50%;
-    --meituan-yellow-hover: 43 100% 44%;
-    --meituan-yellow-light: 43 100% 96%;
+    --meituan-yellow: 32 72% 62%;
+    --meituan-yellow-hover: 32 72% 54%;
+    --meituan-yellow-light: 32 72% 95%;
     --meituan-green: 152 60% 42%;
     --meituan-green-foreground: 0 0% 100%;
     --meituan-red: 4 80% 52%;

@@ -87,14 +87,8 @@ const HistorySidebar = ({ open, onClose, onSelectChat }: HistorySidebarProps) =>
             style={{ width: SIDEBAR_WIDTH }}
           >
             {/* ── Header：标题 + 搜索 + 设置 ── */}
-            <div
-              className="shrink-0 flex items-center justify-between px-4 pt-11 pb-3"
-              style={{
-                background: "rgba(247,244,240,0.95)",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
-              }}
-            >
+            <div className="shrink-0 flex items-center justify-between px-4 pt-11 pb-3 bg-background">
+
               <h1 className="text-[22px] font-bold tracking-tight">周末喵</h1>
               <div className="flex items-center gap-1">
                 <button
