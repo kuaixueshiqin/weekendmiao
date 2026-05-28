@@ -3,7 +3,7 @@ import { Send, Sparkles, SlidersHorizontal, X, Map as MapIcon, List, MapPin, Che
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
-import mascotImg from "@/assets/zhoumoumiao-mascot.png";
+import mascotImg from "@/assets/cat-mascot.png";
 import QuickFillTemplate from "@/components/QuickFillTemplate";
 import ChatItineraryCard from "@/components/chat/ChatItineraryCard";
 import ChatRouteMap, { type MapPoint } from "@/components/chat/ChatRouteMap";
@@ -343,7 +343,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-between px-5 pt-4 pb-3 flex-1"
+            className="flex flex-col items-center justify-between px-5 pt-4 pb-0 flex-1"
           >
             {/* Hero mascot area */}
             <motion.div
