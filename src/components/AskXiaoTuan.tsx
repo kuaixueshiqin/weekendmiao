@@ -292,7 +292,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="relative flex flex-col h-full bg-background overflow-hidden">
+
       {/* ── Header bar (参考元宝图2) ── */}
       <div
         className="shrink-0 flex items-center justify-between px-4 pt-11 pb-2"
@@ -335,7 +336,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
       <div
         ref={scrollRef}
         className={cn(
-          "flex-1 scrollbar-hide",
+          "flex-1 scrollbar-hide flex flex-col",
           messages.length === 0 ? "overflow-hidden" : "overflow-y-auto"
         )}
       >
@@ -343,22 +344,19 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-between px-5 pt-4 pb-0 flex-1"
+            className="flex flex-col items-center justify-between px-5 pt-6 pb-0 flex-1"
           >
-            {/* Hero mascot area */}
+            {/* Hero mascot — large, no frame */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.05 }}
-              className="relative mb-2"
+              className="relative"
             >
-              <div className="w-14 h-14 rounded-[22px] bg-gradient-to-br from-primary/30 to-meituan-orange/20 flex items-center justify-center shadow-lg">
-                <img src={mascotImg} alt="周末喵" className="w-10 h-10 object-contain" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-meituan-green rounded-full border-2 border-white flex items-center justify-center">
-                <span className="text-white text-[8px] font-bold">AI</span>
-              </div>
+              <img src={mascotImg} alt="周末喵" className="w-28 h-28 object-contain" />
             </motion.div>
+
+
 
             <motion.div
               initial={{ y: 10, opacity: 0 }}
