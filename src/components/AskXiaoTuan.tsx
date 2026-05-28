@@ -358,17 +358,6 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
 
 
 
-            <motion.div
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="text-center mb-1"
-            >
-              <p className="text-sm text-muted-foreground font-medium">
-                你好，我是周末喵 🐱，可以帮你规划周末时间
-              </p>
-            </motion.div>
-
             {/* Quick fill button */}
             <motion.button
               initial={{ y: 8, opacity: 0 }}
