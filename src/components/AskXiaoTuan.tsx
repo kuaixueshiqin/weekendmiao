@@ -379,7 +379,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               className="w-full space-y-2"
             >
               <p className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-primary" /> 大家都在问
+                <Sparkles className="w-3 h-3 text-primary" /> 你好，我是周末喵 🐱，可以帮你规划周末时间
               </p>
               {suggestions.map((s, i) => (
                 <motion.button
