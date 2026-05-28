@@ -350,7 +350,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.05 }}
-              className="relative mb-3"
+              className="relative mb-2"
             >
               <div className="w-14 h-14 rounded-[22px] bg-gradient-to-br from-primary/30 to-meituan-orange/20 flex items-center justify-center shadow-lg">
                 <img src={mascotImg} alt="周末喵" className="w-10 h-10 object-contain" />
