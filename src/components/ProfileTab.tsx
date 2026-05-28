@@ -31,10 +31,7 @@ const ProfileTab = () => {
     <div className="bg-background min-h-full pb-8">
       {/* ── Hero header ── */}
       <div
-        className="relative px-5 pt-10 pb-6 overflow-hidden"
-        style={{
-          background: "linear-gradient(160deg, hsl(43 100% 50% / 0.12) 0%, hsl(36 18% 96%) 60%)",
-        }}
+        className="relative px-5 pt-10 pb-6 overflow-hidden bg-background"
       >
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-primary/8 -translate-y-8 translate-x-8" />
