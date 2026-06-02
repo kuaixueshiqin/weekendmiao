@@ -556,7 +556,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 32 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-3xl w-full max-w-[430px] mx-3"
+              className="bg-background rounded-t-3xl w-full max-w-[430px] mt-auto"
               style={{ boxShadow: "var(--shadow-modal)" }}
             >
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
