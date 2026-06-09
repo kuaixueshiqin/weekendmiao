@@ -12,6 +12,12 @@ import LocationPage from "@/components/LocationPage";
 import LocationPermissionModal from "@/components/LocationPermissionModal";
 import HistorySidebar from "@/components/HistorySidebar";
 import { useLocation } from "@/hooks/use-location";
+import {
+  createConversation,
+  saveMessage,
+  touchConversation,
+  loadMessages,
+} from "@/lib/chatHistory";
 import { cn } from "@/lib/utils";
 import type { DayPlan } from "@/types/itinerary";
 
