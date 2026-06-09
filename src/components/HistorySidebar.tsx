@@ -42,6 +42,7 @@ interface HistorySidebarProps {
   open: boolean;
   onClose: () => void;
   onSelectChat: (id: string) => void;
+  onNewChat?: () => void;
   currentLocationName: string;
   onLocationClick: () => void;
 }
@@ -49,7 +50,8 @@ interface HistorySidebarProps {
 // 侧栏占主容器约 78%
 const SIDEBAR_WIDTH = "78%";
 
-const HistorySidebar = ({ open, onClose, onSelectChat }: HistorySidebarProps) => {
+const HistorySidebar = ({ open, onClose, onSelectChat, onNewChat }: HistorySidebarProps) => {
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
