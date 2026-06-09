@@ -164,6 +164,23 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
     setMessages(newMessages);
     setInput("");
     setIsTyping(true);
+    setHideSuggestions(true);
+
+    // Ensure a conversation exists, then persist the user message
+    let convoId = conversationId;
+    if (!convoId) {
+      const convo = await createConversation(msg);
+      if (convo) {
+        convoId = convo.id;
+        setConversationId(convo.id);
+      }
+    } else {
+      // Update title to first user message if still default? Just touch updated_at.
+      touchConversation(convoId);
+    }
+    if (convoId) {
+      saveMessage(convoId, "user", msg);
+    }
 
     let assistantContent = "";
 
