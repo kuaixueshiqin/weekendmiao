@@ -114,6 +114,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showTemplate, setShowTemplate] = useState(false);
+  const [hideSuggestions, setHideSuggestions] = useState(false);
   const [viewMode, setViewMode] = useState<ChatViewMode>("list");
   const [travelDate, setTravelDate] = useState<Date | undefined>();
   const scrollRef = useRef<HTMLDivElement>(null);
