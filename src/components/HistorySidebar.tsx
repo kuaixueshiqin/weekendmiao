@@ -42,6 +42,7 @@ interface HistorySidebarProps {
   open: boolean;
   onClose: () => void;
   onSelectChat: (id: string) => void;
+  onNewChat?: () => void;
   currentLocationName: string;
   onLocationClick: () => void;
 }
@@ -49,7 +50,8 @@ interface HistorySidebarProps {
 // 侧栏占主容器约 78%
 const SIDEBAR_WIDTH = "78%";
 
-const HistorySidebar = ({ open, onClose, onSelectChat }: HistorySidebarProps) => {
+const HistorySidebar = ({ open, onClose, onSelectChat, onNewChat }: HistorySidebarProps) => {
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -110,7 +112,7 @@ const HistorySidebar = ({ open, onClose, onSelectChat }: HistorySidebarProps) =>
             {/* ── New chat 大按钮（顶部） ── */}
             <div className="shrink-0 px-4 pt-1 pb-3">
               <button
-                onClick={onClose}
+                onClick={() => { onNewChat?.(); onClose(); }}
                 className="w-full h-12 rounded-full flex items-center justify-center gap-2 bg-muted/70 hover:bg-muted active:scale-[0.99] transition-all text-foreground"
               >
                 <MessageSquarePlus className="w-[18px] h-[18px]" />
