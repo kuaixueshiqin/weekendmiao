@@ -644,19 +644,38 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
       <HistorySidebar
         open={showSidebar}
         onClose={() => setShowSidebar(false)}
-        onSelectChat={(id) => {
-          // TODO: load chat history by id
-          console.log("Select history:", id);
+        refreshKey={historyRefreshKey}
+        activeConversationId={conversationId}
+        onSelectChat={async (id) => {
+          const rows = await loadMessages(id);
+          const restored: Message[] = rows.map((r) => {
+            const meta = (r.metadata || {}) as any;
+            return {
+              id: r.id,
+              role: r.role,
+              content: r.content,
+              itinerary: meta.itinerary,
+              routePoints: meta.routePoints,
+              nearbyPoints: meta.nearbyPoints,
+            };
+          });
+          setMessages(restored);
+          setConversationId(id);
+          setHideSuggestions(true);
+          setInput("");
+          setShowTemplate(false);
         }}
         onNewChat={() => {
           setMessages([]);
           setInput("");
-          setHideSuggestions(true);
+          setHideSuggestions(false);
           setShowTemplate(false);
+          setConversationId(null);
         }}
         currentLocationName={location.displayName}
         onLocationClick={() => { setShowSidebar(false); setShowLocationPage(true); }}
       />
+
     </div>
   );
 };
