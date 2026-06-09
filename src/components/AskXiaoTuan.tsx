@@ -255,6 +255,16 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
         }
         return prev;
       });
+
+      // Persist assistant reply
+      if (convoId && assistantContent) {
+        const meta = parsed
+          ? { itinerary: parsed.days, routePoints: parsed.routePoints, nearbyPoints: parsed.nearbyPoints }
+          : null;
+        await saveMessage(convoId, "assistant", assistantContent, meta);
+        await touchConversation(convoId);
+        setHistoryRefreshKey((k) => k + 1);
+      }
     } catch (e) {
       console.error("Chat error:", e);
       setMessages((prev) => [
