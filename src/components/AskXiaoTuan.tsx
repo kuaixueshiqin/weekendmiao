@@ -12,6 +12,12 @@ import LocationPage from "@/components/LocationPage";
 import LocationPermissionModal from "@/components/LocationPermissionModal";
 import HistorySidebar from "@/components/HistorySidebar";
 import { useLocation } from "@/hooks/use-location";
+import {
+  createConversation,
+  saveMessage,
+  touchConversation,
+  loadMessages,
+} from "@/lib/chatHistory";
 import { cn } from "@/lib/utils";
 import type { DayPlan } from "@/types/itinerary";
 
@@ -117,6 +123,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
   const [hideSuggestions, setHideSuggestions] = useState(false);
   const [viewMode, setViewMode] = useState<ChatViewMode>("list");
   const [travelDate, setTravelDate] = useState<Date | undefined>();
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Location state
@@ -156,6 +164,23 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
     setMessages(newMessages);
     setInput("");
     setIsTyping(true);
+    setHideSuggestions(true);
+
+    // Ensure a conversation exists, then persist the user message
+    let convoId = conversationId;
+    if (!convoId) {
+      const convo = await createConversation(msg);
+      if (convo) {
+        convoId = convo.id;
+        setConversationId(convo.id);
+      }
+    } else {
+      // Update title to first user message if still default? Just touch updated_at.
+      touchConversation(convoId);
+    }
+    if (convoId) {
+      saveMessage(convoId, "user", msg);
+    }
 
     let assistantContent = "";
 
@@ -230,6 +255,16 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
         }
         return prev;
       });
+
+      // Persist assistant reply
+      if (convoId && assistantContent) {
+        const meta = parsed
+          ? { itinerary: parsed.days, routePoints: parsed.routePoints, nearbyPoints: parsed.nearbyPoints }
+          : null;
+        await saveMessage(convoId, "assistant", assistantContent, meta);
+        await touchConversation(convoId);
+        setHistoryRefreshKey((k) => k + 1);
+      }
     } catch (e) {
       console.error("Chat error:", e);
       setMessages((prev) => [
@@ -609,19 +644,38 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
       <HistorySidebar
         open={showSidebar}
         onClose={() => setShowSidebar(false)}
-        onSelectChat={(id) => {
-          // TODO: load chat history by id
-          console.log("Select history:", id);
+        refreshKey={historyRefreshKey}
+        activeConversationId={conversationId}
+        onSelectChat={async (id) => {
+          const rows = await loadMessages(id);
+          const restored: Message[] = rows.map((r) => {
+            const meta = (r.metadata || {}) as any;
+            return {
+              id: r.id,
+              role: r.role,
+              content: r.content,
+              itinerary: meta.itinerary,
+              routePoints: meta.routePoints,
+              nearbyPoints: meta.nearbyPoints,
+            };
+          });
+          setMessages(restored);
+          setConversationId(id);
+          setHideSuggestions(true);
+          setInput("");
+          setShowTemplate(false);
         }}
         onNewChat={() => {
           setMessages([]);
           setInput("");
-          setHideSuggestions(true);
+          setHideSuggestions(false);
           setShowTemplate(false);
+          setConversationId(null);
         }}
         currentLocationName={location.displayName}
         onLocationClick={() => { setShowSidebar(false); setShowLocationPage(true); }}
       />
+
     </div>
   );
 };
