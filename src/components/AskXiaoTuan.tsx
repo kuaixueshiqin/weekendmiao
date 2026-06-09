@@ -123,6 +123,8 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
   const [hideSuggestions, setHideSuggestions] = useState(false);
   const [viewMode, setViewMode] = useState<ChatViewMode>("list");
   const [travelDate, setTravelDate] = useState<Date | undefined>();
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Location state
