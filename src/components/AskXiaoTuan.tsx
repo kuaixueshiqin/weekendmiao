@@ -185,6 +185,16 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
     let assistantContent = "";
 
     try {
+      // 构建用户上下文，传递给 AI 后端用于精准推荐
+      const userContext = {
+        location: {
+          displayName: location.displayName || "",
+          fullAddress: location.fullAddress || "",
+          coords: location.coords || null,
+        },
+        travelDate: travelDate ? format(travelDate, "yyyy年M月d日") : null,
+      };
+
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
@@ -193,6 +203,7 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
         },
         body: JSON.stringify({
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          context: userContext,
         }),
       });
 

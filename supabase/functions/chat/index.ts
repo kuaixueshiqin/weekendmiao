@@ -9,22 +9,57 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
+    const { messages, context } = body as {
+      messages: Array<{ role: string; content: string }>;
+      context?: {
+        location?: {
+          displayName: string;
+          fullAddress: string;
+          coords?: { lat: number; lng: number } | null;
+        };
+        travelDate?: string | null;
+      };
+    };
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          {
-            role: "system",
-            content: `你是"周末喵"，一只会规划周末出行的小猫咪助手。你需要把行程规划输出成一篇杂志风格的攻略文章，让用户一眼就想收藏。
+    // ── 动态构建用户上下文段落 ──
+    const contextParts: string[] = [];
+    if (context?.location) {
+      const loc = context.location;
+      if (loc.displayName || loc.fullAddress) {
+        const locDetail = loc.fullAddress && loc.fullAddress !== loc.displayName
+          ? `${loc.displayName}（${loc.fullAddress}）`
+          : loc.displayName || loc.fullAddress;
+        contextParts.push(`用户当前位置：${locDetail}`);
+      }
+      if (loc.coords) {
+        contextParts.push(`经纬度：${loc.coords.lat.toFixed(4)}, ${loc.coords.lng.toFixed(4)}`);
+      }
+    }
+    if (context?.travelDate) {
+      contextParts.push(`计划出行日期：${context.travelDate}`);
+    }
+
+    // 从用户最新消息中提取结构化信息（QuickFillTemplate 拼接的格式）
+    const lastUserMsg = messages.filter((m) => m.role === "user").pop()?.content || "";
+    const timeMatch = lastUserMsg.match(/出发[：:]\s*(.+?)，\s*返回[：:]\s*(.+?)(?:，|$)/);
+    const companionMatch = lastUserMsg.match(/同行[：:](.+?)(?:，|$)/);
+    const budgetMatch = lastUserMsg.match(/人均预算(\d+)元/);
+    const styleMatch = lastUserMsg.match(/偏好风格[：:](.+?)$/);
+
+    if (timeMatch) contextParts.push(`出行时间段：${timeMatch[1]} ~ ${timeMatch[2]}`);
+    if (companionMatch) contextParts.push(`同行人员：${companionMatch[1]}`);
+    if (budgetMatch) contextParts.push(`人均预算：¥${budgetMatch[1]}`);
+    if (styleMatch) contextParts.push(`偏好风格：${styleMatch[1]}`);
+
+    // ── 组装 system prompt（静态模板 + 动态上下文）──
+    const contextBlock = contextParts.length > 0
+      ? `\n\n【用户上下文信息 — 推荐时必须严格参考】\n${contextParts.map((p) => `- ${p}`).join("\n")}\n\n推荐原则：\n1. 所有推荐的景点/餐厅/活动必须在用户当前位置附近或合理交通范围内（优先步行/短途可达）\n2. 时间安排必须符合用户的出行时间段\n3. 预算和人数必须匹配用户设定\n4. 如果用户位置明确，优先推荐该城市/区域的真实地点\n5. 不要推荐距离过远或不切实际的方案`
+      : "";
+
+    const systemPrompt = `你是"周末喵"，一只会规划周末出行的小猫咪助手。你需要把行程规划输出成一篇杂志风格的攻略文章，让用户一眼就想收藏。${contextBlock}
 
 **严格按以下 Markdown 结构输出**（不要加任何代码块包裹）：
 
@@ -68,7 +103,20 @@ serve(async (req) => {
 3. 时段标题严格用 \`### 上午｜...\` 这种竖线分隔格式
 4. 引言用 \`> "..."\` 包裹，每节 1-2 条
 5. 不要写"以下是为您规划的行程"这种开场白，直接进入 H1 标题
-6. 如果用户只问一句话简单问题（不是规划行程），就正常对话回答，不用套这个模板`,
+6. 如果用户只问一句话简单问题（不是规划行程），就正常对话回答，不用套这个模板`;
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
           },
           ...messages,
         ],

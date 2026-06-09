@@ -416,14 +416,14 @@ const ItineraryTab = () => {
         </div>
       ) : null}
 
-      {/* Detail Modal */}
+      {/* Detail Bottom Sheet — 半屏页从下方滑出 */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
+            className="fixed inset-0 z-50 flex items-end justify-center"
             style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)" }}
             onClick={() => setSelectedItem(null)}
           >
@@ -433,14 +433,16 @@ const ItineraryTab = () => {
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 32 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md"
-              style={{ boxShadow: "var(--shadow-modal)" }}
+              className="bg-card rounded-t-3xl w-full max-w-[430px] mx-auto flex flex-col"
+              style={{ maxHeight: "85vh", boxShadow: "var(--shadow-modal)" }}
             >
-              {/* Drag handle */}
-              <div className="flex justify-center pt-3 pb-1">
+              {/* Drag handle — 固定顶部 */}
+              <div className="flex justify-center pt-3 pb-1 shrink-0">
                 <div className="w-10 h-1 rounded-full bg-border" />
               </div>
-              <div className="px-5 pb-6">
+
+              {/* 可滚动内容区 */}
+              <div className="px-5 overflow-y-auto min-h-0 flex-1">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold">{selectedItem.name}</h3>
@@ -458,12 +460,16 @@ const ItineraryTab = () => {
                   {selectedItem.code && (
                     <div className="border-t border-border/50 pt-3 mt-3">
                       <p className="text-xs text-muted-foreground mb-2">核销码</p>
-                      <div className="bg-card rounded-xl p-3 border border-border/50 text-center">
-                        <p className="text-2xl font-mono font-bold tracking-widest">{selectedItem.code}</p>
+                      <div className="bg-card rounded-xl p-4 border border-border/50 text-center">
+                        <p className="text-2xl font-mono font-bold tracking-widest select-all">{selectedItem.code}</p>
                       </div>
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* 底部操作栏 — 固定不随内容滚动 */}
+              <div className="px-5 pb-6 pt-2 shrink-0 bg-card">
                 <div className="flex gap-2">
                   {selectedItem.status === "unbooked" && (
                     <button

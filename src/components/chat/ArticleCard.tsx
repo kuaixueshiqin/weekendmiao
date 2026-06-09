@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Utensils, Hotel, Clock, CheckCircle, ExternalLink, ChevronDown, ChevronUp, MessageCircle, Sparkles, Navigation, Calendar, Star, Ticket } from "lucide-react";
+import { motion } from "framer-motion";
+import { MapPin, Utensils, Hotel, Clock, CheckCircle, ExternalLink, MessageCircle, Sparkles, Navigation, Calendar, Star, List, Map as MapIcon } from "lucide-react";
 import mascotImg from "@/assets/zhoumoumiao-mascot.png";
 
 interface ArticleCardProps {
@@ -32,29 +32,6 @@ interface ParsedArticle {
   suggestions: string[];
   destination: string;
   duration: string;
-}
-
-// ─── image pools (Unsplash landscape) ──────────────────────────────────────
-const SCENIC_IMGS = [
-  "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600&q=80",
-  "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80",
-  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80",
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&q=80",
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
-];
-const FOOD_IMGS = [
-  "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80",
-  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80",
-];
-const HOTEL_IMGS = [
-  "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80",
-  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80",
-];
-
-function pickImg(type: "scenic" | "food" | "hotel", seed: number) {
-  const pool = type === "food" ? FOOD_IMGS : type === "hotel" ? HOTEL_IMGS : SCENIC_IMGS;
-  return pool[seed % pool.length];
 }
 
 // ─── colour helpers ───────────────────────────────────────────────────────────
@@ -211,182 +188,44 @@ function parseArticle(raw: string): ParsedArticle {
   };
 }
 
-// ─── Timeline stop card (in route section) ───────────────────────────────────
-const TimelineStop = ({
+// ─── Compact timeline stop (时间轴 tab) ──────────────────────────────────────
+const TimelineRow = ({
   place,
   idx,
-  imgSeed,
   isLast,
 }: {
   place: PlaceHint;
   idx: number;
-  imgSeed: number;
   isLast: boolean;
 }) => {
   const cfg = typeConfig[place.type];
   const Icon = cfg.icon;
-  const [booked, setBooked] = useState(false);
 
   return (
     <div className="flex gap-3">
-      {/* Timeline spine */}
+      {/* spine */}
       <div className="flex flex-col items-center shrink-0 w-6">
         <div className={`w-6 h-6 rounded-full ${cfg.bg} flex items-center justify-center shadow-sm border-2 border-card z-10`}>
           <span className="text-white text-[9px] font-bold">{idx + 1}</span>
         </div>
-        {!isLast && <div className="w-0.5 flex-1 mt-1 bg-border min-h-[32px]" />}
+        {!isLast && <div className="w-0.5 flex-1 mt-0.5 bg-border min-h-[24px]" />}
       </div>
-      {/* Card */}
-      <div className={`flex-1 mb-4 rounded-xl border ${cfg.border} bg-card overflow-hidden shadow-sm`}>
-        {/* image */}
-        <div className="h-28 overflow-hidden relative">
-          <img
-            src={pickImg(place.type, imgSeed)}
-            alt={place.name}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          <span className={`absolute top-2 left-2 text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${cfg.border} bg-card/90 ${cfg.text} flex items-center gap-1`}>
-            <Icon className="w-2.5 h-2.5" />{cfg.label}
+      {/* row content */}
+      <div className={`flex-1 mb-3 flex items-center justify-between rounded-xl border ${cfg.border} bg-card px-3 py-2.5`}>
+        <div className="flex items-center gap-2 min-w-0">
+          <Icon className={`w-3.5 h-3.5 shrink-0 ${cfg.text}`} />
+          <span className="text-sm font-semibold truncate">{place.name}</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${cfg.border} ${cfg.text} font-medium shrink-0`}>
+            {cfg.label}
           </span>
-          {place.price && (
-            <span className="absolute bottom-2 right-2 text-[11px] font-bold text-white bg-black/50 px-2 py-0.5 rounded-full">
-              {place.price}
-            </span>
-          )}
         </div>
-        {/* info */}
-        <div className="px-3 py-2.5">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold">{place.name}</h4>
-            <button
-              onClick={() => setBooked(!booked)}
-              className={`flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full transition-all ${
-                booked
-                  ? "bg-meituan-green/10 text-meituan-green"
-                  : "bg-primary text-primary-foreground hover:bg-meituan-yellow-hover"
-              }`}
-            >
-              {booked ? (
-                <><CheckCircle className="w-3 h-3" />已预定</>
-              ) : (
-                <><Ticket className="w-3 h-3" />立即预定</>
-              )}
-            </button>
-          </div>
-          {place.tip && <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-2">{place.tip}</p>}
-        </div>
+        {place.price && (
+          <span className="text-[11px] font-bold shrink-0 ml-2" style={{ color: "hsl(var(--meituan-red))" }}>
+            {place.price}
+          </span>
+        )}
       </div>
     </div>
-  );
-};
-
-// ─── Section detail card (分) ────────────────────────────────────────────────
-const SectionCard = ({
-  section,
-  globalIdx,
-}: {
-  section: Section;
-  globalIdx: number;
-}) => {
-  const [expanded, setExpanded] = useState(true);
-  const tagClass = TAG_COLORS[section.tag] || "bg-muted text-muted-foreground border-border";
-
-  // Clean body for display (strip markdown)
-  const cleanBody = section.body
-    .replace(/^#+\s*/gm, "")
-    .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1")
-    .replace(/>\s?/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-
-  // main image: pick by section index
-  const mainImgType = section.places[0]?.type ?? "scenic";
-  const mainImgSeed = globalIdx;
-
-  // pull quote from blockquotes
-  const quoteMatch = section.body.match(/>\s?"([^"\n]+)"/);
-  const quote = quoteMatch ? quoteMatch[1] : null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: globalIdx * 0.05 }}
-      className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm"
-    >
-      {/* Section header */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          {section.tag && (
-            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${tagClass}`}>
-              {section.tag}
-            </span>
-          )}
-          <span className="font-semibold text-sm">{section.title}</span>
-        </div>
-        {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-      </button>
-
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
-            className="overflow-hidden"
-          >
-            {/* Main image */}
-            <div className="relative h-44 overflow-hidden">
-              <img
-                src={pickImg(mainImgType, mainImgSeed)}
-                alt={section.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-4 right-4">
-                <h3 className="text-white font-bold text-base drop-shadow">{section.title}</h3>
-              </div>
-            </div>
-
-            <div className="px-4 py-3 space-y-3">
-              {/* Body text */}
-              <p className="text-[13.5px] text-foreground/80 leading-relaxed">{cleanBody.split("\n")[0]}</p>
-
-              {/* Pull quote */}
-              {quote && (
-                <div className="border-l-2 border-primary bg-primary/5 rounded-r-xl px-3 py-2">
-                  <p className="text-[12px] text-muted-foreground italic">"{quote}"</p>
-                </div>
-              )}
-
-              {/* Place chips */}
-              {section.places.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {section.places.slice(0, 4).map((p) => {
-                    const cfg = typeConfig[p.type];
-                    const Ic = cfg.icon;
-                    return (
-                      <span
-                        key={p.name}
-                        className={`flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.text} bg-card font-medium`}
-                      >
-                        <Ic className="w-2.5 h-2.5" />{p.name}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
   );
 };
 
@@ -458,6 +297,7 @@ const ArticleCard = ({ content, onSuggestionClick }: ArticleCardProps) => {
   const today = new Date();
   const dateStr = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()}`;
   const parsed = parseArticle(content);
+  const [routeTab, setRouteTab] = useState<"timeline" | "map">("timeline");
 
   // Collect all places for route section
   const allPlaces = parsed.sections.flatMap((s) => s.places).slice(0, 6);
@@ -534,46 +374,48 @@ const ArticleCard = ({ content, onSuggestionClick }: ArticleCardProps) => {
         </div>
       </header>
 
-      {/* ── 分：SECTION DETAILS ──────────────────────────────────────────────── */}
-      {parsed.sections.length > 0 && (
-        <section className="px-4 py-4 space-y-3">
-          <h2 className="text-[13px] font-bold text-muted-foreground flex items-center gap-1.5 mb-1">
-            <span className="w-1 h-4 rounded-full bg-primary inline-block" />
-            行程详情
-          </h2>
-          {parsed.sections.map((sec, i) => (
-            <SectionCard key={i} section={sec} globalIdx={i} />
-          ))}
-        </section>
-      )}
-
-      {/* ── 路线：ROUTE MAP + TIMELINE ──────────────────────────────────────── */}
+      {/* ── 路线规划：Tab 切换（时间轴 / 地图路线） ──────────────────────────── */}
       {allPlaces.length > 0 && (
-        <section className="px-4 pb-4">
-          <h2 className="text-[13px] font-bold text-muted-foreground flex items-center gap-1.5 mb-3">
-            <span className="w-1 h-4 rounded-full bg-meituan-blue inline-block" />
-            路线规划
-          </h2>
-
-          {/* Mini map */}
-          <MiniRouteMap places={allPlaces} />
-
-          {/* Timeline with booking buttons */}
-          <div className="mt-4">
-            {allPlaces.map((place, i) => (
-              <TimelineStop
-                key={i}
-                place={place}
-                idx={i}
-                imgSeed={i + parsed.sections.length}
-                isLast={i === allPlaces.length - 1}
-              />
-            ))}
+        <section className="px-4 pt-4 pb-4">
+          {/* Tab bar */}
+          <div className="flex bg-muted rounded-xl p-0.5 mb-3 border border-border/50">
+            <button
+              onClick={() => setRouteTab("timeline")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                routeTab === "timeline" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <List className="w-3 h-3" /> 时间轴
+            </button>
+            <button
+              onClick={() => setRouteTab("map")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                routeTab === "map" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <MapIcon className="w-3 h-3" /> 地图路线
+            </button>
           </div>
+
+          {/* Tab content */}
+          {routeTab === "timeline" ? (
+            <div>
+              {allPlaces.map((place, i) => (
+                <TimelineRow
+                  key={i}
+                  place={place}
+                  idx={i}
+                  isLast={i === allPlaces.length - 1}
+                />
+              ))}
+            </div>
+          ) : (
+            <MiniRouteMap places={allPlaces} />
+          )}
         </section>
       )}
 
-      {/* ── 总：FOOTER SUGGESTIONS ──────────────────────────────────────────── */}
+      {/* ── FOOTER SUGGESTIONS ──────────────────────────────────────────────── */}
       <footer className="px-4 pb-5 pt-1 border-t border-border/60 bg-muted/30">
         <div className="flex items-center gap-1.5 mt-3 mb-2.5">
           <MessageCircle className="w-3.5 h-3.5 text-muted-foreground" />

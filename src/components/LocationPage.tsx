@@ -96,14 +96,7 @@ const LocationPage = ({ currentAddress, onBack, onSelect, onRelocate }: Location
       style={{ boxShadow: "0 0 40px rgba(0,0,0,0.12)" }}
     >
       {/* ── Header ── */}
-      <div
-        className="shrink-0 flex items-center gap-3 px-4 pt-12 pb-3 border-b border-border/60"
-        style={{
-          background: "rgba(247,244,240,0.95)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-        }}
-      >
+      <div className="shrink-0 flex items-center gap-3 px-4 pt-12 pb-3 border-b border-border/60 bg-background">
         <button
           onClick={onBack}
           className="w-9 h-9 rounded-2xl bg-muted flex items-center justify-center hover:bg-secondary transition-colors shrink-0"
@@ -259,14 +252,10 @@ const LocationPage = ({ currentAddress, onBack, onSelect, onRelocate }: Location
       <div className="shrink-0 p-4 border-t border-border/50 bg-background">
         <button
           onClick={() => setShowAddForm(true)}
-          className="w-full py-3.5 rounded-2xl font-bold text-sm text-amber-900 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          style={{
-            background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))",
-            boxShadow: "0 4px 16px hsl(43 100% 50% / 0.35)",
-          }}
+          className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] bg-muted text-foreground hover:bg-secondary border border-border/60"
         >
-          <Plus className="w-4 h-4" />
-          新增出游地址
+          <Plus className="w-4 h-4 text-primary" />
+          <span>新增出游地址</span>
         </button>
       </div>
 
