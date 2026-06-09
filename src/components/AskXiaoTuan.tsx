@@ -373,28 +373,30 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
             </motion.button>
 
             {/* Suggestion chips */}
-            <motion.div
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="w-full space-y-2"
-            >
-              <p className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-primary" /> 你好，我是周末喵 🐱，可以帮你规划周末时间
-              </p>
-              {suggestions.map((s, i) => (
-                <motion.button
-                  key={s}
-                  initial={{ x: -8, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.22 + i * 0.06 }}
-                  onClick={() => handleSend(s)}
-                  className="w-full px-3.5 py-1.5 rounded-[16px] bg-card border border-border hover:border-primary/40 transition-all text-left"
-                >
-                  <span className="text-[12px] font-medium text-foreground/85 leading-snug">{s}</span>
-                </motion.button>
-              ))}
-            </motion.div>
+            {!hideSuggestions && (
+              <motion.div
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="w-full space-y-2"
+              >
+                <p className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 text-primary" /> 你好，我是周末喵 🐱，可以帮你规划周末时间
+                </p>
+                {suggestions.map((s, i) => (
+                  <motion.button
+                    key={s}
+                    initial={{ x: -8, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.22 + i * 0.06 }}
+                    onClick={() => handleSend(s)}
+                    className="w-full px-3.5 py-1.5 rounded-[16px] bg-card border border-border hover:border-primary/40 transition-all text-left"
+                  >
+                    <span className="text-[12px] font-medium text-foreground/85 leading-snug">{s}</span>
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
           </motion.div>
         )}
 
