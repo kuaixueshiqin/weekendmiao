@@ -112,7 +112,7 @@ const HistorySidebar = ({ open, onClose, onSelectChat, onNewChat }: HistorySideb
             {/* ── New chat 大按钮（顶部） ── */}
             <div className="shrink-0 px-4 pt-1 pb-3">
               <button
-                onClick={onClose}
+                onClick={() => { onNewChat?.(); onClose(); }}
                 className="w-full h-12 rounded-full flex items-center justify-center gap-2 bg-muted/70 hover:bg-muted active:scale-[0.99] transition-all text-foreground"
               >
                 <MessageSquarePlus className="w-[18px] h-[18px]" />
