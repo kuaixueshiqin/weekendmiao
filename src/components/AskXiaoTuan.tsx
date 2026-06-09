@@ -613,6 +613,12 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
           // TODO: load chat history by id
           console.log("Select history:", id);
         }}
+        onNewChat={() => {
+          setMessages([]);
+          setInput("");
+          setHideSuggestions(true);
+          setShowTemplate(false);
+        }}
         currentLocationName={location.displayName}
         onLocationClick={() => { setShowSidebar(false); setShowLocationPage(true); }}
       />
