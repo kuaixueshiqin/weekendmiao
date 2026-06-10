@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Utensils, Hotel, Clock, CheckCircle, ExternalLink, MessageCircle, Sparkles, Navigation, Calendar, Star, List, Map as MapIcon } from "lucide-react";
+import { MapPin, Utensils, Hotel, Clock, CheckCircle, ExternalLink, MessageCircle, Sparkles, Navigation, Calendar, Star, List, Map as MapIcon, BookmarkPlus, CheckCircle2, Loader2 } from "lucide-react";
 import mascotImg from "@/assets/zhoumoumiao-mascot.png";
+import { useTrips, type AiTripInput } from "@/hooks/useTrips";
 
 interface ArticleCardProps {
   content: string;
@@ -292,12 +293,78 @@ const MiniRouteMap = ({ places }: { places: PlaceHint[] }) => {
   );
 };
 
+// ─── Convert ParsedArticle → AiTripInput ─────────────────────────────────────
+function toAiTripInput(parsed: ParsedArticle, rawContent: string): AiTripInput {
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+
+  // Group sections by time-of-day tags into one "day"
+  const items = parsed.sections.flatMap((section) =>
+    section.places.map((place) => ({
+      time: place.time || "",
+      name: place.name,
+      type: place.type,
+      description: place.tip || section.title || "",
+      price: place.price || "",
+    }))
+  );
+
+  // Try to detect multi-day from raw content
+  const dayMatches = [...rawContent.matchAll(/(?:第(\d+)天|Day\s*(\d+))/gi)];
+  const numDays = dayMatches.length > 0
+    ? Math.max(...dayMatches.map((m) => parseInt(m[1] || m[2])))
+    : 1;
+
+  if (numDays <= 1) {
+    return {
+      title: parsed.title || "AI规划行程",
+      dates: dateStr,
+      days: [
+        {
+          day: 1,
+          date: dateStr,
+          period: parsed.duration || "一日游",
+          items,
+        },
+      ],
+    };
+  }
+
+  // Multi-day: split items roughly equally
+  const perDay = Math.ceil(items.length / numDays);
+  const days = Array.from({ length: numDays }, (_, i) => ({
+    day: i + 1,
+    date: `第${i + 1}天`,
+    period: "",
+    items: items.slice(i * perDay, (i + 1) * perDay),
+  }));
+
+  return {
+    title: parsed.title || "AI规划行程",
+    dates: dateStr,
+    days,
+  };
+}
+
 // ─── Main ArticleCard ─────────────────────────────────────────────────────────
 const ArticleCard = ({ content, onSuggestionClick }: ArticleCardProps) => {
   const today = new Date();
   const dateStr = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()}`;
   const parsed = parseArticle(content);
   const [routeTab, setRouteTab] = useState<"timeline" | "map">("timeline");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const { saveAiTrip } = useTrips();
+
+  const handleSave = async () => {
+    if (saved || saving) return;
+    setSaving(true);
+    const input = toAiTripInput(parsed, content);
+    const result = await saveAiTrip(input);
+    setSaving(false);
+    if (result) setSaved(true);
+  };
 
   // Collect all places for route section
   const allPlaces = parsed.sections.flatMap((s) => s.places).slice(0, 6);
@@ -357,7 +424,7 @@ const ArticleCard = ({ content, onSuggestionClick }: ArticleCardProps) => {
 
           {/* Quick stats */}
           {parsed.sections.length > 0 && (
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 mt-3 flex-wrap">
               <div className="flex items-center gap-1 bg-card/80 rounded-full px-2.5 py-1 border border-border text-[11px] text-muted-foreground">
                 <Clock className="w-3 h-3" /> {parsed.sections.length} 个时段
               </div>
@@ -369,6 +436,25 @@ const ArticleCard = ({ content, onSuggestionClick }: ArticleCardProps) => {
               <div className="flex items-center gap-1 bg-card/80 rounded-full px-2.5 py-1 border border-border text-[11px] text-muted-foreground">
                 <Star className="w-3 h-3 fill-primary text-primary" /> AI精选
               </div>
+              {/* Save button */}
+              <button
+                onClick={handleSave}
+                disabled={saving || saved}
+                className={`flex items-center gap-1 rounded-full px-2.5 py-1 border text-[11px] font-semibold transition-all ${
+                  saved
+                    ? "bg-meituan-green/10 border-meituan-green/30 text-meituan-green"
+                    : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+                } disabled:opacity-60`}
+              >
+                {saving ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : saved ? (
+                  <CheckCircle2 className="w-3 h-3" />
+                ) : (
+                  <BookmarkPlus className="w-3 h-3" />
+                )}
+                {saved ? "已保存到行程" : "保存为行程"}
+              </button>
             </div>
           )}
         </div>
