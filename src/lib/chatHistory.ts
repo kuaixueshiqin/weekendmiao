@@ -13,6 +13,24 @@ export function getDeviceId(): string {
   return id;
 }
 
+// Ensure there is an authenticated (anonymous) session so RLS policies
+// scoped to auth.uid() apply. Safe to call repeatedly.
+let ensureAuthPromise: Promise<string | null> | null = null;
+export function ensureAuth(): Promise<string | null> {
+  if (ensureAuthPromise) return ensureAuthPromise;
+  ensureAuthPromise = (async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session?.user?.id) return data.session.user.id;
+    const { data: signIn, error } = await supabase.auth.signInAnonymously();
+    if (error) {
+      console.error("anonymous sign-in failed", error);
+      return null;
+    }
+    return signIn.user?.id ?? null;
+  })();
+  return ensureAuthPromise;
+}
+
 export interface ConversationRow {
   id: string;
   device_id: string;
@@ -31,9 +49,11 @@ export interface MessageRow {
 }
 
 export async function createConversation(title: string): Promise<ConversationRow | null> {
+  const userId = await ensureAuth();
+  if (!userId) return null;
   const { data, error } = await supabase
     .from("conversations")
-    .insert({ device_id: getDeviceId(), title: title.slice(0, 40) || "新对话" })
+    .insert({ device_id: getDeviceId(), user_id: userId, title: title.slice(0, 40) || "新对话" })
     .select()
     .single();
   if (error) {
@@ -66,10 +86,11 @@ export async function saveMessage(
 }
 
 export async function listConversations(): Promise<ConversationRow[]> {
+  const userId = await ensureAuth();
+  if (!userId) return [];
   const { data, error } = await supabase
     .from("conversations")
     .select("*")
-    .eq("device_id", getDeviceId())
     .order("updated_at", { ascending: false })
     .limit(200);
   if (error) {
