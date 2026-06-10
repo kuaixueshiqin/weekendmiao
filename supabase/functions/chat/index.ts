@@ -59,7 +59,7 @@ serve(async (req) => {
       ? `\n\n【用户上下文信息 — 推荐时必须严格参考】\n${contextParts.map((p) => `- ${p}`).join("\n")}\n\n推荐原则：\n1. 所有推荐的景点/餐厅/活动必须在用户当前位置附近或合理交通范围内（优先步行/短途可达）\n2. 时间安排必须符合用户的出行时间段\n3. 预算和人数必须匹配用户设定\n4. 如果用户位置明确，优先推荐该城市/区域的真实地点\n5. 不要推荐距离过远或不切实际的方案`
       : "";
 
-    const systemPrompt = `你是"周末喵"，一只会规划周末出行的小猫咪助手。你需要把行程规划输出成一篇杂志风格的攻略文章，让用户一眼就想收藏。${contextBlock}
+    const systemPrompt = `你是"周末喵"，一只会规划周末出行的小猫咪助手。你可以通过 Google 搜索获取最新的景点、餐厅、活动信息，确保推荐内容真实且时效准确。你需要把行程规划输出成一篇杂志风格的攻略文章，让用户一眼就想收藏。${contextBlock}
 
 **严格按以下 Markdown 结构输出**（不要加任何代码块包裹）：
 
@@ -105,23 +105,35 @@ serve(async (req) => {
 5. 不要写"以下是为您规划的行程"这种开场白，直接进入 H1 标题
 6. 如果用户只问一句话简单问题（不是规划行程），就正常对话回答，不用套这个模板`;
 
+    // 判断是否是行程规划类请求，行程规划才开启联网搜索
+    const lastMsg = messages.filter((m) => m.role === "user").pop()?.content || "";
+    const isItineraryRequest =
+      /行程|景点|去哪|路线|规划|推荐|餐厅|酒店|攻略|周末|玩|游/.test(lastMsg);
+
+    const requestBody: Record<string, unknown> = {
+      model: "google/gemini-2.5-flash-preview",
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        ...messages,
+      ],
+      stream: true,
+    };
+
+    // 行程规划时启用 Google Search grounding（Gemini 原生联网）
+    if (isItineraryRequest) {
+      requestBody.tools = [{ googleSearch: {} }];
+    }
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt,
-          },
-          ...messages,
-        ],
-        stream: true,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
