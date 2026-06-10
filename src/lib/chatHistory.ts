@@ -86,10 +86,11 @@ export async function saveMessage(
 }
 
 export async function listConversations(): Promise<ConversationRow[]> {
+  const userId = await ensureAuth();
+  if (!userId) return [];
   const { data, error } = await supabase
     .from("conversations")
     .select("*")
-    .eq("device_id", getDeviceId())
     .order("updated_at", { ascending: false })
     .limit(200);
   if (error) {
