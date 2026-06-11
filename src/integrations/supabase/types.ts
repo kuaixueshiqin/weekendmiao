@@ -76,6 +76,45 @@ export type Database = {
           },
         ]
       }
+      trips: {
+        Row: {
+          active: boolean
+          created_at: string
+          dates: string
+          days: Json
+          favorited: boolean
+          id: string
+          source_conversation_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          dates?: string
+          days?: Json
+          favorited?: boolean
+          id?: string
+          source_conversation_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          dates?: string
+          days?: Json
+          favorited?: boolean
+          id?: string
+          source_conversation_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
