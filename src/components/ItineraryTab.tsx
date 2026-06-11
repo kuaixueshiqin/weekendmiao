@@ -499,12 +499,18 @@ const ItineraryTab = () => {
                       <p className="text-xs text-muted-foreground mt-1">{trip.dates}</p>
                       <div className="flex gap-2 mt-3">
                         <button
+                          onClick={() => { handleSwitchActive(trip.id); setShowFavorites(false); }}
                           className="flex-1 py-2 rounded-xl text-xs font-bold text-amber-900 transition-all"
                           style={{ background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))" }}
                         >
-                          查看详情
+                          设为当前行程
                         </button>
-                        <button className="px-3 py-2 bg-muted text-foreground rounded-xl text-xs font-semibold hover:bg-secondary transition-colors">取消收藏</button>
+                        <button
+                          onClick={() => handleToggleFav(trip.id, false)}
+                          className="px-3 py-2 bg-muted text-foreground rounded-xl text-xs font-semibold hover:bg-secondary transition-colors"
+                        >
+                          取消收藏
+                        </button>
                       </div>
                     </div>
                   ))
