@@ -505,7 +505,22 @@ const AskXiaoTuan = ({ showSidebar, onSidebarChange }: AskXiaoTuanProps) => {
                             </button>
                           </div>
                           {viewMode === "list" ? (
-                            <ChatItineraryCard days={msg.itinerary} onUpdate={(days) => handleUpdateItinerary(msg.id, days)} onAddToTrip={() => {}} />
+                            <ChatItineraryCard
+                              days={msg.itinerary}
+                              onUpdate={(days) => handleUpdateItinerary(msg.id, days)}
+                              onAddToTrip={async () => {
+                                const title = msg.content.split("\n").find(l => l.trim())?.replace(/[#*]/g, "").trim().slice(0, 40) || "AI 推荐行程";
+                                const trip = await createTrip({
+                                  title,
+                                  dates: travelDate ? format(travelDate, "yyyy年M月d日") : "",
+                                  days: msg.itinerary!,
+                                  source_conversation_id: conversationId,
+                                  setActive: true,
+                                });
+                                if (trip) toast.success("已添加到我的行程");
+                                else toast.error("添加失败，请重试");
+                              }}
+                            />
                           ) : (
                             <ChatRouteMap
                               routePoints={msg.routePoints || []}
