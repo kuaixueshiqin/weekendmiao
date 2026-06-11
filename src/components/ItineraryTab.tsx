@@ -1,76 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MapPin, Utensils, Hotel, CheckCircle2, Clock, AlertCircle, ChevronDown, Plus, Map as MapIcon, List, Trash2, RefreshCw, X, Heart, ShoppingCart, CircleDot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { listTrips, createTrip, updateTrip, deleteTrip, setActiveTrip, toggleFavorite, type TripRow } from "@/lib/trips";
+import type { DayPlan, ItineraryItem, Status } from "@/types/itinerary";
+import { toast } from "sonner";
 
-type Status = "unbooked" | "pending" | "completed" | "expired";
 type ViewMode = "timeline" | "map";
 
-interface ItineraryItem {
-  id: string;
-  time: string;
-  name: string;
-  type: "scenic" | "food" | "hotel";
-  description: string;
-  price: string;
-  status: Status;
-  code?: string;
-}
-
-interface DayPlan {
-  day: number;
-  date: string;
-  period: string;
-  items: ItineraryItem[];
-}
-
-interface Trip {
-  id: string;
-  title: string;
-  dates: string;
-  days: DayPlan[];
-  active: boolean;
-  favorited: boolean;
-}
-
-const mockTrips: Trip[] = [
-  {
-    id: "1",
-    title: "周末下午亲子半日游",
-    dates: "今天下午",
-    active: true,
-    favorited: false,
-    days: [
-      {
-        day: 1, date: "周六下午", period: "半日游",
-        items: [
-          { id: "1", time: "14:00", name: "星光亲子乐园", type: "scenic", description: "室内乐园，小滑梯跨路迎天都有", price: "¥128/人", status: "completed", code: "MT20250501-3321" },
-          { id: "2", time: "16:30", name: "世纪金源购物中心", type: "scenic", description: "逛潮流，送孩子打卡拍照", price: "免费", status: "completed" },
-          { id: "3", time: "17:30", name: "绿茶山轻食餐厅", type: "food", description: "健康沙拉、鸡辛汤面，老婆最爱的减脂小馆", price: "人均¥68", status: "pending", code: "MT20250501-8819" },
-          { id: "4", time: "19:00", name: "奠江十街天天奶茶", type: "food", description: "芹果塔小雏、秘芷小料心等网红饮品", price: "人均¥28", status: "unbooked" },
-        ],
-      },
-    ],
-  },
-];
-
-const mockFavorites: Trip[] = [
-  {
-    id: "f1",
-    title: "上周末亲子游方案",
-    dates: "周六下午，共3小时",
-    active: false,
-    favorited: true,
-    days: [],
-  },
-  {
-    id: "f2",
-    title: "朋友聚会包吹方案",
-    dates: "周日下午，共4人",
-    active: false,
-    favorited: true,
-    days: [],
-  },
-];
+type Trip = TripRow;
 
 const statusConfig = {
   unbooked: { icon: CircleDot, label: "未预定", className: "bg-primary/10 text-primary" },
@@ -80,9 +17,6 @@ const statusConfig = {
 };
 
 const typeIcon = { scenic: MapPin, food: Utensils, hotel: Hotel };
-// kept for reference; border colors are now applied via inline style
-const _typeColor = { scenic: "border-l-meituan-blue", food: "border-l-meituan-orange", hotel: "border-l-purple-500" };
-void _typeColor;
 
 const ItineraryTab = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("timeline");
@@ -90,93 +24,113 @@ const ItineraryTab = () => {
   const [selectedItem, setSelectedItem] = useState<ItineraryItem | null>(null);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showAddTrip, setShowAddTrip] = useState(false);
-  const [trips, setTrips] = useState(mockTrips);
-  const [favorites] = useState(mockFavorites);
-  
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // New trip form
   const [newTitle, setNewTitle] = useState("");
   const [newDates, setNewDates] = useState("");
 
-  const activeTrip = trips.find((t) => t.active);
+  const refresh = useCallback(async () => {
+    const list = await listTrips();
+    setTrips(list);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const favorites = trips.filter((t) => t.favorited);
+  const activeTrip = trips.find((t) => t.active) || trips[0];
+
+  const persistDays = async (tripId: string, days: DayPlan[]) => {
+    await updateTrip(tripId, { days });
+  };
 
   const handleDeleteItem = (dayIdx: number, itemId: string) => {
-    setTrips((prev) =>
-      prev.map((t) =>
-        t.active
-          ? { ...t, days: t.days.map((d, i) => (i === dayIdx ? { ...d, items: d.items.filter((item) => item.id !== itemId) } : d)) }
-          : t
-      )
+    if (!activeTrip) return;
+    const newDays = activeTrip.days.map((d, i) =>
+      i === dayIdx ? { ...d, items: d.items.filter((item) => item.id !== itemId) } : d
     );
+    setTrips((prev) => prev.map((t) => (t.id === activeTrip.id ? { ...t, days: newDays } : t)));
+    persistDays(activeTrip.id, newDays);
   };
 
   const handleRefreshItem = (dayIdx: number, itemId: string) => {
+    if (!activeTrip) return;
     const replacements: Record<string, { name: string; description: string; price: string }> = {
       scenic: { name: "太子湾公园", description: "赏花胜地，春日必去", price: "免费" },
       food: { name: "弄堂里·杭帮菜", description: "地道杭帮菜，环境雅致", price: "人均¥95" },
       hotel: { name: "桂语山房酒店", description: "隐于山林，禅意体验", price: "¥528" },
     };
-    setTrips((prev) =>
-      prev.map((t) =>
-        t.active
-          ? {
-              ...t,
-              days: t.days.map((d, i) =>
-                i === dayIdx
-                  ? {
-                      ...d,
-                      items: d.items.map((item) =>
-                        item.id === itemId
-                          ? { ...item, ...replacements[item.type], id: Date.now().toString() }
-                          : item
-                      ),
-                    }
-                  : d
-              ),
-            }
-          : t
-      )
+    const newDays = activeTrip.days.map((d, i) =>
+      i === dayIdx
+        ? {
+            ...d,
+            items: d.items.map((item) =>
+              item.id === itemId
+                ? { ...item, ...replacements[item.type], id: Date.now().toString() }
+                : item
+            ),
+          }
+        : d
     );
-    
+    setTrips((prev) => prev.map((t) => (t.id === activeTrip.id ? { ...t, days: newDays } : t)));
+    persistDays(activeTrip.id, newDays);
   };
 
-  const handleAddTrip = () => {
+  const handleAddTrip = async () => {
     if (!newTitle.trim()) return;
-    const newTrip: Trip = {
-      id: Date.now().toString(),
+    const trip = await createTrip({
       title: newTitle,
       dates: newDates || "待定",
-      active: false,
-      favorited: false,
       days: [],
-    };
-    setTrips((prev) => [...prev, newTrip]);
-    setNewTitle("");
-    setNewDates("");
-    setShowAddTrip(false);
+      setActive: trips.length === 0,
+    });
+    if (trip) {
+      toast.success("行程已创建");
+      setNewTitle("");
+      setNewDates("");
+      setShowAddTrip(false);
+      refresh();
+    } else {
+      toast.error("创建失败");
+    }
+  };
+
+  const handleDeleteTrip = async (id: string) => {
+    await deleteTrip(id);
+    toast.success("已删除");
+    refresh();
+  };
+
+  const handleSwitchActive = async (id: string) => {
+    await setActiveTrip(id);
+    refresh();
+  };
+
+  const handleToggleFav = async (id: string, fav: boolean) => {
+    await toggleFavorite(id, fav);
+    refresh();
   };
 
   const unbookedCount = activeTrip?.days.reduce((sum, d) => sum + d.items.filter((i) => i.status === "unbooked").length, 0) || 0;
 
   const handleBookAll = () => {
-    setTrips((prev) =>
-      prev.map((t) =>
-        t.active
-          ? {
-              ...t,
-              days: t.days.map((d) => ({
-                ...d,
-                items: d.items.map((item) =>
-                  item.status === "unbooked"
-                    ? { ...item, status: "pending" as Status, code: `MT${Date.now().toString().slice(-8)}-${Math.floor(Math.random() * 9000 + 1000)}` }
-                    : item
-                ),
-              })),
-            }
-          : t
-      )
-    );
+    if (!activeTrip) return;
+    const newDays = activeTrip.days.map((d) => ({
+      ...d,
+      items: d.items.map((item) =>
+        item.status === "unbooked"
+          ? { ...item, status: "pending" as Status, code: `MT${Date.now().toString().slice(-8)}-${Math.floor(Math.random() * 9000 + 1000)}` }
+          : item
+      ),
+    }));
+    setTrips((prev) => prev.map((t) => (t.id === activeTrip.id ? { ...t, days: newDays } : t)));
+    persistDays(activeTrip.id, newDays);
   };
+
 
   return (
     <div className="bg-background min-h-full">
@@ -237,6 +191,62 @@ const ItineraryTab = () => {
       </div>
 
       <div className="px-4 pb-6 pt-3 space-y-3">
+        {/* Empty state */}
+        {!loading && trips.length === 0 && (
+          <div className="bg-card rounded-2xl border border-border/50 p-8 text-center" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="text-4xl mb-2">🗺️</div>
+            <p className="text-sm font-semibold mb-1">还没有行程</p>
+            <p className="text-xs text-muted-foreground mb-4">去对话页让周末喵为你规划，或手动新建一个</p>
+            <button
+              onClick={() => setShowAddTrip(true)}
+              className="px-4 py-2 rounded-xl text-xs font-bold text-amber-900"
+              style={{ background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))" }}
+            >
+              新建行程
+            </button>
+          </div>
+        )}
+
+        {/* Trip switcher when multiple trips exist */}
+        {trips.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
+            {trips.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => handleSwitchActive(t.id)}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                  t.id === activeTrip?.id
+                    ? "bg-primary text-amber-900 border-primary"
+                    : "bg-card text-muted-foreground border-border hover:text-foreground"
+                }`}
+              >
+                {t.title}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Active trip actions */}
+        {activeTrip && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleToggleFav(activeTrip.id, !activeTrip.favorited)}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-colors ${
+                activeTrip.favorited ? "bg-meituan-red/10 text-meituan-red" : "bg-muted text-muted-foreground"
+              }`}
+            >
+              <Heart className={`w-3 h-3 ${activeTrip.favorited ? "fill-current" : ""}`} />
+              {activeTrip.favorited ? "已收藏" : "收藏"}
+            </button>
+            <button
+              onClick={() => { if (confirm("确认删除该行程？")) handleDeleteTrip(activeTrip.id); }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-muted text-muted-foreground hover:text-meituan-red transition-colors"
+            >
+              <Trash2 className="w-3 h-3" />删除
+            </button>
+          </div>
+        )}
+
         {/* One-click Book All */}
         {activeTrip && unbookedCount > 0 && (
           <button
@@ -545,12 +555,18 @@ const ItineraryTab = () => {
                       <p className="text-xs text-muted-foreground mt-1">{trip.dates}</p>
                       <div className="flex gap-2 mt-3">
                         <button
+                          onClick={() => { handleSwitchActive(trip.id); setShowFavorites(false); }}
                           className="flex-1 py-2 rounded-xl text-xs font-bold text-amber-900 transition-all"
                           style={{ background: "linear-gradient(135deg, hsl(43 100% 50%), hsl(33 95% 52%))" }}
                         >
-                          查看详情
+                          设为当前行程
                         </button>
-                        <button className="px-3 py-2 bg-muted text-foreground rounded-xl text-xs font-semibold hover:bg-secondary transition-colors">取消收藏</button>
+                        <button
+                          onClick={() => handleToggleFav(trip.id, false)}
+                          className="px-3 py-2 bg-muted text-foreground rounded-xl text-xs font-semibold hover:bg-secondary transition-colors"
+                        >
+                          取消收藏
+                        </button>
                       </div>
                     </div>
                   ))
