@@ -18,6 +18,8 @@ import {
   touchConversation,
   loadMessages,
 } from "@/lib/chatHistory";
+import { createTrip } from "@/lib/trips";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { DayPlan } from "@/types/itinerary";
 
