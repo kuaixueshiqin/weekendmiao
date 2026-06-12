@@ -380,7 +380,7 @@ const ItineraryTab = () => {
             </div>
           ))}
         </div>
-      ) : viewMode === "map" ? (
+      ) : viewMode === "map" && activeTrip ? (
         <div className="bg-card rounded-2xl border border-border/50 overflow-hidden" style={{ boxShadow: "var(--shadow-card)" }}>
           <div className="aspect-[4/3] bg-[hsl(210_20%_95%)] relative overflow-hidden">
             <div className="absolute top-[25%] left-[20%] w-[35%] h-[30%] rounded-[50%] bg-[hsl(200_60%_85%)] opacity-60" />
